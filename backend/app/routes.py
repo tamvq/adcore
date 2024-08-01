@@ -61,17 +61,17 @@ def get_course(course_id: str):
     course['_id'] = str(course['_id'])
     return course
 
-@router.get("/courses/universities")
+@router.get("/universities")
 def get_universities():
     universities = db.courses.distinct("university")
     return {"universities": universities}
 
-@router.get("/courses/countries")
+@router.get("/countries")
 def get_countries():
     countries = db.courses.distinct("country")
     return {"countries": countries}
 
-@router.get("/courses/cities")
+@router.get("/cities")
 def get_cities():
     cities = db.courses.distinct("city")
     return {"cities": cities}
