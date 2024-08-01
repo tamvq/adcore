@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      target: builder
+    container_name: adcore-api
+    environment:
+      PORT: 8000
+      MONGODB_URI: mongodb://db:27017/
+      DATABASE_NAME: adcore
+      COURSE_DATA_URL: https://api.mockaroo.com/api/501b2790?count=1000&key=8683a1c0
+    ports:
+      - 8000:8000
+    networks:
+      - adcore-network
+
+  db:
+    image: mongo:4.2.0
+    container_name: adcore-db
+    restart: always
+    volumes:
+      - db:/data/db
+    networks:
+      - adcore-network
+    expose:
+      - 27017
+
+networks:
+  adcore-network:
+
+volumes:
+  db:
