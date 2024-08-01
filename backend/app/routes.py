@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, date
 from .database import db
 from .models import Course, CourseUpdate
 
@@ -14,12 +14,16 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
         query = {"$text": {"$search": search}}
     courses = list(db.courses.find(query).skip((page-1)*limit).limit(limit))
     for course in courses:
-        course['_id'] = str(course['_id'])  # Convert ObjectId to string
+        course['_id'] = str(course['_id'])
     return courses
 
 @router.post("/course")
 def create_course(course: Course):
-    course_dict = course.model_dump()
+    course_dict = course.dict()
+    if 'startDate' in course_dict and isinstance(course_dict['startDate'], date):
+        course_dict['startDate'] = datetime.combine(course_dict['startDate'], datetime.min.time())
+    if 'endDate' in course_dict and isinstance(course_dict['endDate'], date):
+        course_dict['endDate'] = datetime.combine(course_dict['endDate'], datetime.min.time())
     course_dict['createdAt'] = datetime.utcnow()
     result = db.courses.insert_one(course_dict)
     return {"id": str(result.inserted_id)}
@@ -28,7 +32,11 @@ def create_course(course: Course):
 def update_course(course_id: str, course: CourseUpdate):
     if not ObjectId.is_valid(course_id):
         raise HTTPException(status_code=400, detail="Invalid course ID")
-    update_data = {k: v for k, v in course.model_dump().items() if v is not None}
+    update_data = {k: v for k, v in course.dict().items() if v is not None}
+    if 'startDate' in update_data and isinstance(update_data['startDate'], date):
+        update_data['startDate'] = datetime.combine(update_data['startDate'], datetime.min.time())
+    if 'endDate' in update_data and isinstance(update_data['endDate'], date):
+        update_data['endDate'] = datetime.combine(update_data['endDate'], datetime.min.time())
     result = db.courses.update_one({"_id": ObjectId(course_id)}, {"$set": update_data})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Course not found")
@@ -50,9 +58,8 @@ def get_course(course_id: str):
     course = db.courses.find_one({"_id": ObjectId(course_id)})
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    course['_id'] = str(course['_id'])  # Convert ObjectId to string
+    course['_id'] = str(course['_id'])
     return course
-
 
 @router.get("/courses/universities")
 def get_universities():

@@ -17,5 +17,3 @@ db.courses.create_index([
     ("name", "text"),
     ("description", "text")
 ], name="course_text_index")
-
-db.courses.create_index("createdAt", expireAfterSeconds=600)
