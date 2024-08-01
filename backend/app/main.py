@@ -18,6 +18,7 @@ def clear_and_load_data():
 
 @app.on_event("startup")
 def startup_event():
+    clear_and_load_data()
     schedule.every(10).minutes.do(clear_and_load_data)
 
     def run_scheduler():
