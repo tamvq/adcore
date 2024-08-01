@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
-from bson import ObjectId
 from .database import db
 from .models import Course, CourseUpdate
+from datetime import datetime
 
 router = APIRouter()
 
@@ -11,13 +11,14 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
     query = {}
     if search:
         query = {"$text": {"$search": search}}
-    courses = db.courses.find(query).skip((page-1)*limit).limit(limit)
-    total = db.courses.count_documents(query)
-    return {"total": total, "courses": list(courses)}
+    courses = list(db.courses.find(query).skip((page-1)*limit).limit(limit))
+    for course in courses:
+        course['_id'] = str(course['_id'])  # Convert ObjectId to string
+    return courses
 
 @router.post("/course")
 def create_course(course: Course):
-    course_dict = course.dict()
+    course_dict = course.model_dump()
     course_dict['createdAt'] = datetime.utcnow()
     result = db.courses.insert_one(course_dict)
     return {"id": str(result.inserted_id)}
@@ -26,7 +27,7 @@ def create_course(course: Course):
 def update_course(course_id: str, course: CourseUpdate):
     if not ObjectId.is_valid(course_id):
         raise HTTPException(status_code=400, detail="Invalid course ID")
-    update_data = {k: v for k, v in course.dict().items() if v is not None}
+    update_data = {k: v for k, v in course.model_dump().items() if v is not None}
     result = db.courses.update_one({"_id": ObjectId(course_id)}, {"$set": update_data})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Course not found")

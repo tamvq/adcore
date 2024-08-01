@@ -1,9 +1,6 @@
-
 from datetime import datetime
 from pymongo import MongoClient
-
-client = MongoClient("mongodb://localhost:27017/")
-db = client['courses_db']
+from .database import db
 
 def normalize_course_data(df):
     # Rename the DataFrame columns to use underscores instead of spaces
