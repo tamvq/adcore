@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
+from bson import ObjectId
+from datetime import datetime
 from .database import db
 from .models import Course, CourseUpdate
-from datetime import datetime
 
 router = APIRouter()
 
@@ -42,17 +43,28 @@ def delete_course(course_id: str):
         raise HTTPException(status_code=404, detail="Course not found")
     return {"success": True}
 
-@router.get("/autocomplete/universities")
+@router.get("/courses/{course_id}")
+def get_course(course_id: str):
+    if not ObjectId.is_valid(course_id):
+        raise HTTPException(status_code=400, detail="Invalid course ID")
+    course = db.courses.find_one({"_id": ObjectId(course_id)})
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    course['_id'] = str(course['_id'])  # Convert ObjectId to string
+    return course
+
+
+@router.get("/courses/universities")
 def get_universities():
     universities = db.courses.distinct("university")
     return {"universities": universities}
 
-@router.get("/autocomplete/countries")
+@router.get("/courses/countries")
 def get_countries():
     countries = db.courses.distinct("country")
     return {"countries": countries}
 
-@router.get("/autocomplete/cities")
+@router.get("/courses/cities")
 def get_cities():
     cities = db.courses.distinct("city")
     return {"cities": cities}
