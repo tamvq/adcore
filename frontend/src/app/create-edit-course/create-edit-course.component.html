@@ -1,68 +1,73 @@
 <div class="flex flex-col justify-center items-center pt-32">
-  <form
-    class="w-3/5 flex flex-col gap-4"
-    [formGroup]="courseForm"
-    (ngSubmit)="onSubmit()"
-  >
-    <h1 *ngIf="isCreateMode">New Course</h1>
-    <h1 *ngIf="!isCreateMode">Edit Course</h1>
+  <div *ngIf="getCourseByIdInProgress; else form">
+    <mat-spinner diameter="24"></mat-spinner>
+  </div>
+  <ng-template #form>
+    <form
+      class="w-3/5 flex flex-col gap-4"
+      [formGroup]="courseForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <h1 *ngIf="isCreateMode">New Course</h1>
+      <h1 *ngIf="!isCreateMode">Edit Course</h1>
 
-    <app-field-text-input
-      label="Course Name"
-      [control]="getControl('name')"
-    ></app-field-text-input>
-    <app-autocomplete
-      label="University"
-      [control]="getControl('university')"
-      [options]="universityOptions"
-    >
-    </app-autocomplete>
-    <app-autocomplete
-      label="City"
-      [control]="getControl('city')"
-      [options]="cityOptions"
-    >
-    </app-autocomplete>
+      <app-field-text-input
+        label="Course Name"
+        [control]="getControl('name')"
+      ></app-field-text-input>
+      <app-autocomplete
+        label="University"
+        [control]="getControl('university')"
+        [options]="universityOptions"
+      >
+      </app-autocomplete>
+      <app-autocomplete
+        label="City"
+        [control]="getControl('city')"
+        [options]="cityOptions"
+      >
+      </app-autocomplete>
 
-    <app-autocomplete
-      label="Country"
-      [control]="getControl('country')"
-      [options]="countryOptions"
-    >
-    </app-autocomplete>
-    <app-field-currency-input
-      label="Price"
-      [currencyControl]="getControl('currency')"
-      [priceControl]="getControl('price')"
-    ></app-field-currency-input>
+      <app-autocomplete
+        label="Country"
+        [control]="getControl('country')"
+        [options]="countryOptions"
+      >
+      </app-autocomplete>
+      <app-field-currency-input
+        label="Price"
+        [currencyControl]="getControl('currency')"
+        [priceControl]="getControl('price')"
+      ></app-field-currency-input>
 
-    <app-field-date-input
-      label="Start Date"
-      [control]="getControl('startDate')"
-    >
-    </app-field-date-input>
-    <app-field-date-input label="End Date" [control]="getControl('endDate')">
-    </app-field-date-input>
-    <mat-error *ngIf="courseForm.hasError('invalidDateRange')">
-      <strong> End Date must be after Start Date. </strong>
-    </mat-error>
-    <app-field-text-input
-      label="Description"
-      type="textarea"
-      [control]="getControl('description')"
-    ></app-field-text-input>
-    <div class="flex mt-3 gap-2 justify-end">
-      <div *ngIf="isLoading; else submitButton">
-        <mat-spinner diameter="24"></mat-spinner>
+      <app-field-date-input
+        label="Start Date"
+        [control]="getControl('startDate')"
+      >
+      </app-field-date-input>
+      <app-field-date-input label="End Date" [control]="getControl('endDate')">
+      </app-field-date-input>
+      <mat-error *ngIf="courseForm.hasError('invalidDateRange')">
+        <strong> End Date must be after Start Date. </strong>
+      </mat-error>
+      <app-field-text-input
+        label="Description"
+        type="textarea"
+        [control]="getControl('description')"
+      ></app-field-text-input>
+      <div class="flex mt-3 gap-2 justify-end">
+        <div *ngIf="isLoading; else submitButton">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+        <ng-template #submitButton>
+          <button type="submit" mat-flat-button [disabled]="isLoading">
+            Submit
+          </button>
+          <button type="button" mat-raised-button (click)="onCancel()">
+            Cancel
+          </button>
+        </ng-template>
       </div>
-      <ng-template #submitButton>
-        <button type="button" mat-raised-button (click)="onCancel()">
-          Cancel
-        </button>
-        <button type="submit" mat-flat-button color="primary" [disabled]="isLoading">
-          Submit
-        </button>
-      </ng-template>
-    </div>
-  </form>
+    </form>
+  </ng-template>
 </div>

@@ -61,3 +61,12 @@ export function formatDate(
   if (!date) return null;
   return datePipe.transform(date, format);
 }
+
+export const uniqueOptions = (options: Option[]) => {
+  return options.reduce((unique, option) => {
+    if (!unique.some((c) => c.value === option.value)) {
+      unique.push(option);
+    }
+    return unique;
+  }, [] as Option[]);
+};

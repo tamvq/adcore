@@ -21,6 +21,7 @@ import {
   autocompleteStringValidator,
   dateRangeValidator,
   formatDate,
+  uniqueOptions,
 } from '../shared/utils';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -51,6 +52,7 @@ export class CreateEditCourseComponent {
   cityOptions: Option[] = [];
   countryOptions: Option[] = [];
   isLoading: boolean = false;
+  getCourseByIdInProgress: boolean = false;
 
   constructor(
     private router: Router,
@@ -85,27 +87,39 @@ export class CreateEditCourseComponent {
 
   private _fetchCourseById = (id?: string) => {
     if (id) {
+      this.getCourseByIdInProgress = true;
       this.courseService.getCourseById(id).subscribe((course) => {
+        this.getCourseByIdInProgress = false;
         this.courseForm.patchValue(course);
+        this.courseForm.get('name')?.disable();
+        this.courseForm.get('university')?.disable();
+        this.courseForm.get('country')?.disable();
+        this.courseForm.get('city')?.disable();
       });
     }
   };
 
   private _fetchAutocompleteOptions = () => {
-    this.universityOptions = TABLE_DATA.map((i) => ({
-      value: i.university,
-      label: i.university,
-    }));
+    this.universityOptions = uniqueOptions(
+      TABLE_DATA.map((i) => ({
+        value: i.university,
+        label: i.university,
+      }))
+    );
 
-    this.countryOptions = TABLE_DATA.map((i) => ({
-      value: i.country,
-      label: i.country,
-    }));
+    this.countryOptions = uniqueOptions(
+      TABLE_DATA.map((i) => ({
+        value: i.country,
+        label: i.country,
+      }))
+    );
 
-    this.cityOptions = TABLE_DATA.map((i) => ({
-      value: i.city,
-      label: i.city,
-    }));
+    this.cityOptions = uniqueOptions(
+      TABLE_DATA.map((i) => ({
+        value: i.city,
+        label: i.city,
+      }))
+    );
     this._setValidatorsToAutocomplete();
   };
 
