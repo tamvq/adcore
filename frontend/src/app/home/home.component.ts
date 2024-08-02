@@ -18,6 +18,7 @@ import { DateTime } from 'luxon';
 
 import { Course, CoursesTable } from '../interface/course';
 import { CourseService } from '../services/course.service';
+import { needConfirmation } from '../components/dialog/dialog.decorator';
 import { formatDate } from '../shared/utils';
 
 @Component({
@@ -101,6 +102,7 @@ export class HomeComponent implements OnInit {
     this.query$.next(($event.target as HTMLInputElement).value);
   }
 
+  @needConfirmation()
   onDeleteCourse(id: string) {
     if (id) {
       this.courseService.deleteCourse(id).subscribe((res) => {
