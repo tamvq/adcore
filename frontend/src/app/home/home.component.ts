@@ -1,18 +1,19 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatCommonModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
-
-import { Courses, CoursesTable } from '../interface/courses';
-import { TABLE_DATA } from '../shared/constants';
-import { DateTime } from 'luxon';
 import { getCurrencySymbol } from '@angular/common';
-import { Router } from '@angular/router';
+import { DateTime } from 'luxon';
+
+import { Course, CoursesTable } from '../interface/course';
+import { CourseService } from '../services/course.service';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ import { Router } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
   displayedColumns: string[] = [
     'course_name',
     'location',
@@ -39,26 +40,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
     'price',
   ];
   dataSource = new MatTableDataSource<CoursesTable>([]);
-  constructor(private router: Router) {}
+  searchQuery: string = '';
+  totalPage: number = 0;
+  private query$ = new Subject<string>();
+  constructor(private router: Router, private courseService: CourseService) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit(): void {
-    this.dataSource.data = TABLE_DATA.map((row: Courses): CoursesTable => {
-      return {
-        ...row,
-        location: `${row.country}, ${row.city}, ${row.university}`,
-        length:
-          DateTime.fromISO(row.end as string)
-            .diff(DateTime.fromISO(row.start as string), 'days')
-            .toObject().days ?? 1,
-        total: `${getCurrencySymbol(row.currency, 'narrow')}${row.price}`,
-      };
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.onFetch();
+    this.query$
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged()
+      ).subscribe((queryInput: string) => {
+        this.searchQuery = queryInput;
+        this.onFetch();
+      })
   }
 
   onClickCreateCourse(): void {
@@ -67,5 +65,39 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   onClickEditCourse(id: string): void {
     this.router.navigate([`/edit/${id}`]);
+  }
+
+  onFetch() {
+    const pageIndex = this.paginator?.pageIndex ? this.paginator?.pageIndex + 1 : 1;
+    this.courseService.getCourses(this.searchQuery, pageIndex, this.paginator?.pageSize).subscribe((res) => {
+      this.dataSource.data = res.data.map((row: Course): CoursesTable => {
+        return {
+          ...row,
+          location: `${row.country}, ${row.city}, ${row.university}`,
+          length:
+            DateTime.fromISO(row.endDate as string)
+              .diff(DateTime.fromISO(row.startDate as string), 'days')
+              .toObject().days ?? 1,
+          total: `${getCurrencySymbol(row.currency, 'narrow')}${row.price}`,
+        };
+      });
+      this.totalPage = res.pagination.total;
+    })
+  }
+
+  onFetchCoursesWithQuery(_$event?: PageEvent) {
+    this.onFetch();
+  }
+
+  onSearchChange($event: Event) {
+    this.query$.next(($event.target as HTMLInputElement).value);
+  }
+
+  onDeleteCourse(id: string) {
+    if (id) {
+      this.courseService.deleteCourse(id).subscribe((res) => {
+        this.onFetch();
+      });
+    }
   }
 }
