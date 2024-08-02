@@ -9,11 +9,11 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { getCurrencySymbol } from '@angular/common';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { DateTime } from 'luxon';
 
 import { Course, CoursesTable } from '../interface/course';
 import { CourseService } from '../services/course.service';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -55,6 +55,7 @@ export class HomeComponent implements OnInit {
         distinctUntilChanged()
       ).subscribe((queryInput: string) => {
         this.searchQuery = queryInput;
+        this.paginator.pageIndex = 0;
         this.onFetch();
       })
   }

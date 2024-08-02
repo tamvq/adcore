@@ -1,3 +1,32 @@
 .search-input {
   width: 500px;
 }
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: #e1e1e1;
+}
+
+tr[data-title] {
+  position: relative;
+
+  &:after {
+    content: attr(data-title);
+    background-color: #333333;
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    bottom: -1.5em;
+    left: 40vw;
+    opacity: 0;
+    padding: 5px 10px;
+    white-space: nowrap;
+    z-index: 99999;
+    visibility: hidden;
+  }
+
+  &:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+  }
+}
