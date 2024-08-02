@@ -14,10 +14,6 @@ class Course(BaseModel):
     currency: str
 
 class CourseUpdate(BaseModel):
-    university: Optional[str] = None
-    city: Optional[str] = None
-    country: Optional[str] = None
-    name: Optional[str] = None
     description: Optional[str] = None
     startDate: Optional[date] = None
     endDate: Optional[date] = None
