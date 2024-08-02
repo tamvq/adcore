@@ -13,7 +13,7 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
     if search:
         query = {"$text": {"$search": search}}
     total = db.courses.count_documents(query)
-    courses = list(db.courses.find(query).skip((page-1)*limit).limit(limit))
+    courses = list(db.courses.find(query).sort("createdAt", -1).skip((page-1)*limit).limit(limit))
     for course in courses:
         course['id'] = str(course.pop('_id'))
     return {
