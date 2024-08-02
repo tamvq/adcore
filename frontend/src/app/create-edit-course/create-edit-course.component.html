@@ -60,7 +60,12 @@
           <mat-spinner diameter="24"></mat-spinner>
         </div>
         <ng-template #submitButton>
-          <button type="submit" mat-flat-button [disabled]="isLoading">
+          <button
+            type="submit"
+            mat-flat-button
+            [disabled]="isLoading"
+            color="primary"
+          >
             Submit
           </button>
           <button type="button" mat-raised-button (click)="onCancel()">

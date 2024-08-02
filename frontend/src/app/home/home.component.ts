@@ -12,7 +12,7 @@ import {
 } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
-import { getCurrencySymbol } from '@angular/common';
+import { CommonModule, getCurrencySymbol } from '@angular/common';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { DateTime } from 'luxon';
 
@@ -33,6 +33,7 @@ import { formatDate } from '../shared/utils';
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
+    CommonModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

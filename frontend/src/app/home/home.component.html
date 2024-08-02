@@ -64,7 +64,13 @@
         *matRowDef="let row; columns: displayedColumns"
         [attr.data-title]="row.description"
       ></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="text-center py-10" [attr.colspan]="displayedColumns.length">
+          No data available
+        </td>
+      </tr>
     </table>
+
     <mat-paginator
       [length]="totalPage"
       [pageSizeOptions]="[10, 20, 50]"
