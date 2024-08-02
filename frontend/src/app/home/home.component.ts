@@ -12,6 +12,7 @@ import { Courses, CoursesTable } from '../interface/courses';
 import { TABLE_DATA } from '../shared/constants';
 import { DateTime } from 'luxon';
 import { getCurrencySymbol } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -30,8 +31,15 @@ import { getCurrencySymbol } from '@angular/common';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['course_name', 'location', 'start', 'length', 'price'];
+  displayedColumns: string[] = [
+    'course_name',
+    'location',
+    'start',
+    'length',
+    'price',
+  ];
   dataSource = new MatTableDataSource<CoursesTable>([]);
+  constructor(private router: Router) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -40,13 +48,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
       return {
         ...row,
         location: `${row.country}, ${row.city}, ${row.university}`,
-        length: DateTime.fromISO(row.end as string).diff(DateTime.fromISO(row.start as string), 'days').toObject().days ?? 1,
-        total: `${getCurrencySymbol(row.currency, 'narrow')}${row.price}`
-      }
-    })
+        length:
+          DateTime.fromISO(row.end as string)
+            .diff(DateTime.fromISO(row.start as string), 'days')
+            .toObject().days ?? 1,
+        total: `${getCurrencySymbol(row.currency, 'narrow')}${row.price}`,
+      };
+    });
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  onClickCreateCourse(): void {
+    this.router.navigate(['/create']);
+  }
+
+  onClickEditCourse(id: string): void {
+    this.router.navigate([`/edit/${id}`]);
   }
 }
