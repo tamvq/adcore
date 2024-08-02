@@ -83,3 +83,10 @@ def get_countries():
 def get_cities():
     cities = db.courses.distinct("city")
     return {"cities": cities}
+
+@router.delete("/courses")
+def delete_all_courses():
+    result = db.courses.delete_many({})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="No courses found to delete")
+    return {"deleted_count": result.deleted_count}
