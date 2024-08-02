@@ -1,5 +1,9 @@
 <div class="flex flex-col justify-center items-center pt-32">
-  <form class="w-3/5" [formGroup]="courseForm">
+  <form
+    class="w-3/5 flex flex-col gap-4"
+    [formGroup]="courseForm"
+    (ngSubmit)="onSubmit()"
+  >
     <h1 *ngIf="isCreateMode">New Course</h1>
     <h1 *ngIf="!isCreateMode">Edit Course</h1>
 
@@ -27,6 +31,7 @@
     >
     </app-autocomplete>
     <app-field-currency-input
+      label="Price"
       [currencyControl]="getControl('currency')"
       [priceControl]="getControl('price')"
     ></app-field-currency-input>
@@ -38,10 +43,26 @@
     </app-field-date-input>
     <app-field-date-input label="End Date" [control]="getControl('endDate')">
     </app-field-date-input>
+    <mat-error *ngIf="courseForm.hasError('invalidDateRange')">
+      <strong> End Date must be after Start Date. </strong>
+    </mat-error>
     <app-field-text-input
       label="Description"
       type="textarea"
       [control]="getControl('description')"
     ></app-field-text-input>
+    <div class="flex mt-3 gap-2 justify-end">
+      <div *ngIf="isLoading; else submitButton">
+        <mat-spinner diameter="24"></mat-spinner>
+      </div>
+      <ng-template #submitButton>
+        <button type="submit" mat-flat-button [disabled]="isLoading">
+          Submit
+        </button>
+        <button type="button" mat-raised-button (click)="onCancel()">
+          Cancel
+        </button>
+      </ng-template>
+    </div>
   </form>
 </div>

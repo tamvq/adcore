@@ -1,9 +1,15 @@
 <section class="p-5">
   <div class="flex gap-5">
-    <button (click)="onClickCreateCourse()" mat-stroked-button>Add New Course</button> 
+    <button (click)="onClickCreateCourse()" mat-stroked-button>
+      Add New Course
+    </button>
     <div class="dense-5">
       <mat-form-field class="search-input">
-        <input matInput placeholder="Search..." (input)="onSearchChange($event)">
+        <input
+          matInput
+          placeholder="Search..."
+          (input)="onSearchChange($event)"
+        />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
     </div>
@@ -15,8 +21,19 @@
         <td mat-cell *matCellDef="let element">
           <div class="flex items-center gap-3">
             <div class="dense-3">
-              <button mat-icon-button aria-label="Delete course" (click)="onDeleteCourse(element.id)">
+              <button
+                mat-icon-button
+                aria-label="Delete course"
+                (click)="onDeleteCourse(element.id)"
+              >
                 <mat-icon>close</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                aria-label="Edit course"
+                (click)="onClickEditCourse(element.id)"
+              >
+                <mat-icon>edit</mat-icon>
               </button>
             </div>
             <div>{{ element.name }}</div>
@@ -29,7 +46,9 @@
       </ng-container>
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef>Start</th>
-        <td mat-cell *matCellDef="let element">{{ element.startDate }}</td>
+        <td mat-cell *matCellDef="let element">
+          {{ formatDateColumn(element.startDate) }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="length">
         <th mat-header-cell *matHeaderCellDef>Course Name</th>
@@ -40,14 +59,19 @@
         <td mat-cell *matCellDef="let element">{{ element.total }}</td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [attr.data-title]="row.description"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [attr.data-title]="row.description"
+      ></tr>
     </table>
-    <mat-paginator 
+    <mat-paginator
       [length]="totalPage"
       [pageSizeOptions]="[10, 20, 50]"
       (page)="onFetchCoursesWithQuery($event)"
       showFirstLastButtons
-      aria-label="Select page of periodic elements">
+      aria-label="Select page of periodic elements"
+    >
     </mat-paginator>
   </div>
 </section>

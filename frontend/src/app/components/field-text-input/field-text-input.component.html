@@ -1,21 +1,27 @@
-<mat-form-field class="w-full">
-  <mat-label>{{ label }}</mat-label>
-  <ng-container [ngSwitch]="type">
-    <!-- Text Input -->
-    <input
-      *ngSwitchCase="'text'"
-      matInput
-      [formControl]="control"
-      [attr.placeholder]="placeholder"
-    />
+<div class="w-full">
+  <mat-form-field class="w-full">
+    <mat-label>{{ label }}</mat-label>
+    <ng-container [ngSwitch]="type">
+      <!-- Text Input -->
+      <input
+        *ngSwitchCase="'text'"
+        matInput
+        [formControl]="control"
+        [attr.placeholder]="placeholder"
+      />
 
-    <!-- Textarea Input -->
-    <textarea
-      *ngSwitchCase="'textarea'"
-      matInput
-      [formControl]="control"
-      [attr.placeholder]="placeholder"
-      [attr.rows]="rows"
-    ></textarea>
-  </ng-container>
-</mat-form-field>
+      <!-- Textarea Input -->
+      <textarea
+        *ngSwitchCase="'textarea'"
+        matInput
+        [formControl]="control"
+        [attr.placeholder]="placeholder"
+        [attr.rows]="rows"
+      ></textarea>
+    </ng-container>
+  </mat-form-field>
+  <app-validation-error
+    [label]="label"
+    [control]="control"
+  ></app-validation-error>
+</div>

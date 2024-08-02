@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ValidationErrorComponent } from '../validation-error/validation-error.component';
 
 @Component({
   selector: 'app-field-text-input',
@@ -12,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatInputModule,
     MatFormFieldModule,
+    ValidationErrorComponent,
   ],
   templateUrl: './field-text-input.component.html',
   styleUrl: './field-text-input.component.scss',

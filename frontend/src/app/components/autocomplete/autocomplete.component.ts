@@ -6,6 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { Option } from '../../types/ui';
+import { ValidationErrorComponent } from '../validation-error/validation-error.component';
 
 @Component({
   selector: 'app-autocomplete',
@@ -15,6 +16,7 @@ import { Option } from '../../types/ui';
     MatInputModule,
     ReactiveFormsModule,
     CommonModule,
+    ValidationErrorComponent,
   ],
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss',

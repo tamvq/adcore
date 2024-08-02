@@ -1,17 +1,23 @@
-<mat-form-field appearance="fill" class="w-full">
-  <mat-label>{{ label }}</mat-label>
-  <input
-    type="text"
-    matInput
-    [formControl]="control"
-    [matAutocomplete]="auto"
-  />
-  <mat-autocomplete #auto="matAutocomplete">
-    <mat-option
-      *ngFor="let option of filteredOptions | async"
-      [value]="option.value"
-    >
-      {{ option.value }}
-    </mat-option>
-  </mat-autocomplete>
-</mat-form-field>
+<div class="w-full">
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>{{ label }}</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="control"
+      [matAutocomplete]="auto"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option
+        *ngFor="let option of filteredOptions | async"
+        [value]="option.value"
+      >
+        {{ option.value }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <app-validation-error
+    [label]="label"
+    [control]="control"
+  ></app-validation-error>
+</div>

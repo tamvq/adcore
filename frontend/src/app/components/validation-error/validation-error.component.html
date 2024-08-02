@@ -1,0 +1,8 @@
+<mat-error
+  [class]="customClass"
+  *ngIf="control.invalid && (control.dirty || control.touched)"
+>
+  <strong>
+    {{ errorMessage }}
+  </strong>
+</mat-error>
