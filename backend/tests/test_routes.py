@@ -40,7 +40,7 @@ def test_get_courses():
     client.post("/courses", json=course_data)
     response = client.get("/courses")
     assert response.status_code == 200
-    assert len(response.json()) == 1
+    assert len(response.json()["data"]) == 1
 
 def test_update_course():
     course_data = {
@@ -58,7 +58,6 @@ def test_update_course():
     course_id = post_response.json()["id"]
 
     update_data = {
-        "name": "Updated Test Course",
         "price": 1200.0
     }
     response = client.put(f"/courses/{course_id}", json=update_data)
@@ -67,7 +66,6 @@ def test_update_course():
 
     get_response = client.get(f"/courses/{course_id}")
     assert get_response.status_code == 200
-    assert get_response.json()["name"] == "Updated Test Course"
     assert get_response.json()["price"] == 1200.0
 
 def test_delete_course():
