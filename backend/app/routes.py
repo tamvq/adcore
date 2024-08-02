@@ -14,7 +14,7 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
         query = {"$text": {"$search": search}}
     courses = list(db.courses.find(query).skip((page-1)*limit).limit(limit))
     for course in courses:
-        course['_id'] = str(course['_id'])
+        course['id'] = str(course.pop('_id'))
     return courses
 
 @router.post("/courses")
@@ -58,7 +58,7 @@ def get_course(course_id: str):
     course = db.courses.find_one({"_id": ObjectId(course_id)})
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    course['_id'] = str(course['_id'])
+    course['id'] = str(course.pop('_id'))
     return course
 
 @router.get("/universities")
