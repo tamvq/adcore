@@ -8,7 +8,7 @@ services:
     container_name: adcore-api
     environment:
       PORT: 8000
-      MONGODB_URI: mongodb://db:27017/
+      MONGO_URI: mongodb://db:27017/
       DATABASE_NAME: adcore
       COURSE_DATA_URL: https://api.mockaroo.com/api/501b2790?count=1000&key=8683a1c0
     ports:

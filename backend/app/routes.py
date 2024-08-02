@@ -17,9 +17,9 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
         course['_id'] = str(course['_id'])
     return courses
 
-@router.post("/course")
+@router.post("/courses")
 def create_course(course: Course):
-    course_dict = course.dict()
+    course_dict = course.model_dump()
     if 'startDate' in course_dict and isinstance(course_dict['startDate'], date):
         course_dict['startDate'] = datetime.combine(course_dict['startDate'], datetime.min.time())
     if 'endDate' in course_dict and isinstance(course_dict['endDate'], date):
@@ -28,11 +28,11 @@ def create_course(course: Course):
     result = db.courses.insert_one(course_dict)
     return {"id": str(result.inserted_id)}
 
-@router.put("/course/{course_id}")
+@router.put("/courses/{course_id}")
 def update_course(course_id: str, course: CourseUpdate):
     if not ObjectId.is_valid(course_id):
         raise HTTPException(status_code=400, detail="Invalid course ID")
-    update_data = {k: v for k, v in course.dict().items() if v is not None}
+    update_data = {k: v for k, v in course.model_dump().items() if v is not None}
     if 'startDate' in update_data and isinstance(update_data['startDate'], date):
         update_data['startDate'] = datetime.combine(update_data['startDate'], datetime.min.time())
     if 'endDate' in update_data and isinstance(update_data['endDate'], date):
@@ -42,7 +42,7 @@ def update_course(course_id: str, course: CourseUpdate):
         raise HTTPException(status_code=404, detail="Course not found")
     return {"success": True}
 
-@router.delete("/course/{course_id}")
+@router.delete("/courses/{course_id}")
 def delete_course(course_id: str):
     if not ObjectId.is_valid(course_id):
         raise HTTPException(status_code=400, detail="Invalid course ID")

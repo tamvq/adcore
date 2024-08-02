@@ -5,3 +5,5 @@ pandas
 pymongo
 requests
 schedule
+httpx
+pytest
