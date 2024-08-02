@@ -3,7 +3,7 @@ version: '3.8'
 services:
   api:
     build:
-      context: .
+      context: backend 
       target: builder
     container_name: adcore-api
     environment:
@@ -15,7 +15,6 @@ services:
       - 8000:8000
     networks:
       - adcore-network
-
   db:
     image: mongo:4.2.0
     container_name: adcore-db
@@ -26,6 +25,15 @@ services:
       - adcore-network
     expose:
       - 27017
+  web:
+    build:
+      context: frontend
+      target: builder
+    ports:
+      - 4200:4200
+    volumes:
+      - ./frontend:/project
+      - /project/node_modules
 
 networks:
   adcore-network:
