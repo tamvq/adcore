@@ -27,7 +27,7 @@ def get_courses(search: Optional[str] = None, page: int = 1, limit: int = 10):
 
 @router.post("/courses")
 def create_course(course: Course):
-    course_dict = course.model_dump()
+    course_dict = course.dict()
     if 'startDate' in course_dict and isinstance(course_dict['startDate'], date):
         course_dict['startDate'] = datetime.combine(course_dict['startDate'], datetime.min.time())
     if 'endDate' in course_dict and isinstance(course_dict['endDate'], date):
@@ -40,7 +40,7 @@ def create_course(course: Course):
 def update_course(course_id: str, course: CourseUpdate):
     if not ObjectId.is_valid(course_id):
         raise HTTPException(status_code=400, detail="Invalid course ID")
-    update_data = {k: v for k, v in course.model_dump().items() if v is not None}
+    update_data = {k: v for k, v in course.dict().items() if v is not None}
     if 'startDate' in update_data and isinstance(update_data['startDate'], date):
         update_data['startDate'] = datetime.combine(update_data['startDate'], datetime.min.time())
     if 'endDate' in update_data and isinstance(update_data['endDate'], date):
